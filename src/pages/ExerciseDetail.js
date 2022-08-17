@@ -37,7 +37,8 @@ const ExerciseDetail = () => {
         `${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`,
         exerciseOptions
       );
-      settargetMuscleExercises(targetMuscleExercises);
+      settargetMuscleExercises(targetMuscleExercisesData);
+
       const equipmentExercisesData = await fetchData(
         `${exerciseDbUrl}/exercises/equipment/${exerciseDetailData.equipment}`,
         exerciseOptions
