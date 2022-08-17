@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 
-import { fetchData, exerciseOptions } from "../utils/fetchData";
+import { fetchData, exerciseOptions, youtubeOptions } from "../utils/fetchData";
 import ExerciseVideos from "../components/ExerciseVideos";
 import Details from "../components/Details";
 import SimilarExercises from "../components/SimilarExercises";
 
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState({});
+  const [exerciseVideos, setExerciseVideos] = useState([]);
   const { id } = useParams();
+  console.log(exerciseVideos);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -21,17 +23,26 @@ const ExerciseDetail = () => {
         `${exerciseDbUrl}/exercises/exercise/${id}`,
         exerciseOptions
       );
-      console.log({ exerciseDetailData });
       setExerciseDetail(exerciseDetailData);
+
+      const exerciseVideosData = await fetchData(
+        `${youtubeSearchUrl}/search?query=${exerciseDetailData.name}`,
+        youtubeOptions
+      );
+      setExerciseVideos(exerciseVideosData.contents);
+      // console.log(exerciseVideosData);
     };
 
     fetchExerciseData();
   }, [id]);
-
+  if (!exerciseVideos.length) return "Loading...";
   return (
     <Box>
       <Details exerciseDetail={exerciseDetail} />
-      <ExerciseVideos />
+      <ExerciseVideos
+        exerciseVideos={exerciseVideos}
+        name={exerciseDetail.name}
+      />
       <SimilarExercises />
     </Box>
   );
